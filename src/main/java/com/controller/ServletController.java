@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.common.constant.Constant;
 import com.common.kafka.KafkaProducer;
-import com.po.Student;
 import com.redis.Redis;
-import com.service.StudentService;
+import com.service.QueryStudentFacade;
 import com.util.LogUtil;
+import com.vo.Student;
 
 import redis.clients.jedis.ShardedJedis;
 
@@ -30,7 +30,7 @@ public class ServletController {
 	private Logger logger = LogUtil.getLog();
 
 	@Resource
-	private StudentService studentService;
+	private QueryStudentFacade queryStudentFacade;
 	@Autowired
 	private Redis redis;
 
@@ -62,7 +62,7 @@ public class ServletController {
 			return "error";
 		}
 		int id = Integer.valueOf(request.getParameter("id"));
-		Student s = studentService.queryOne(id);
+		Student s = queryStudentFacade.queryOne(id);
 		if (s != null) {
 			model.addAttribute("student", s);
 			return "showStudentOne";
@@ -77,7 +77,7 @@ public class ServletController {
 	@RequestMapping("/queryList")
 	public String queryList(HttpServletRequest request, Model model) {
 		KafkaProducer.produce(Constant.PART_1, "1");
-		List<Student> s = studentService.queryList();
+		List<Student> s = queryStudentFacade.queryList();
 		if (s.size() > 0) {
 			model.addAttribute("student", s);
 			return "showStudentList";
@@ -118,8 +118,8 @@ public class ServletController {
 			return "error";
 		}
 		try {
-			studentService.insertInfo(s);
-			Student student = studentService.queryOne(studentService.queryId());
+			queryStudentFacade.insertInfo(s);
+			Student student = queryStudentFacade.queryOne(queryStudentFacade.queryId());
 			model.addAttribute("student", student);
 			return "showStudentOne";
 		} catch (Exception e) {
@@ -147,6 +147,5 @@ public class ServletController {
 		} // end--for
 		return "sucess";
 	}
-	
-	
+
 }

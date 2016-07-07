@@ -1,6 +1,5 @@
 package com.controller;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,17 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSON;
-import com.po.Student;
-import com.service.StudentService;
 import com.util.HttpServletHelper;
 import com.util.LogUtil;
+import com.vo.Student;
 
 @Controller
 public class JsRequestController {
 	private Logger logger = LogUtil.getLog();
-
-	@Resource
-	private StudentService studentService;
 
 	@RequestMapping("/commonRequest")
 	public String queryOne(HttpServletRequest request, Model model) {
@@ -38,14 +33,14 @@ public class JsRequestController {
 		String value = request.getParameter("value2");
 		logger.info("common2=" + common2);
 		logger.info("value=" + value);
-		Student student=new Student();
-        student.setId(74);
-        student.setName("丁晨星宇");
+		Student student = new Student();
+		student.setId(74);
+		student.setName("丁晨星宇");
 		student.setAge(25);
-		
+
 		String str = JSON.toJSONString(student);
 		logger.info(str);
-		
+
 		try {
 			HttpServletHelper.WriteJSON(response, str);
 		} catch (Exception e) {
