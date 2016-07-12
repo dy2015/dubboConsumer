@@ -3,6 +3,7 @@ package com.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -77,14 +78,17 @@ public class ServletController {
 	@RequestMapping("/queryList")
 	public String queryList(HttpServletRequest request, Model model) {
 		KafkaProducer.produce(Constant.PART_1, "1");
+		Date date=new Date();
 		List<Student> s = queryStudentFacade.queryList();
 		if (s.size() > 0) {
 			model.addAttribute("student", s);
+			System.out.println("消耗时间="+((new Date()).getTime()-date.getTime()));
 			return "showStudentList";
 		} else {
 			String message = "数据库中没有同学的信息！";
 			logger.info(message);
 			model.addAttribute("message", message);
+			
 			return "error";
 		}
 	}
